@@ -97,3 +97,6 @@ Content
 *.suo
 *.xcodeproj
 *.xcworkspace
+
+# My configs
+Assets

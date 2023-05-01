@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class SLASH_API AItem : public AActor
 {
@@ -30,14 +32,22 @@ protected:
 		float TransformedCos();
 
 	template<typename T>
-	T Avg(T First, T Second);
+		T Avg(T First, T Second);
 
+	UFUNCTION()
+		virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		float RunningTime;
 
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(VisibleAnywhere)
+		USphereComponent* Sphere;
 };
 
 template<typename T>
