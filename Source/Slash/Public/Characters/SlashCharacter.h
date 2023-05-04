@@ -12,6 +12,7 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UGroomComponent;
+class AItem;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -27,31 +28,39 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = Input);
+	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* SlashContext;
 
-	UPROPERTY(EditAnywhere, Category = Input);
+	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* MovementAction;
 
-	UPROPERTY(EditAnywhere, Category = Input);
+	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* LookAction;
 
-	UPROPERTY(EditAnywhere, Category = Input);
+	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* EquipAction;
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void Equip(const FInputActionValue& Value);
 
-
-	UPROPERTY(VisibleAnywhere);
+	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
 
-	UPROPERTY(VisibleAnywhere);
+	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* ViewCamera;
 
-	UPROPERTY(VisibleAnywhere, Category = Hair);
+	UPROPERTY(VisibleAnywhere, Category = Hair)
 	UGroomComponent* Hair;
 
-	UPROPERTY(VisibleAnywhere, Category = Hair);
+	UPROPERTY(VisibleAnywhere, Category = Hair)
 	UGroomComponent* Eyebrows;
+
+	UPROPERTY(VisibleInstanceOnly)
+	AItem* OverlappingItem;
+public:
+	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 };

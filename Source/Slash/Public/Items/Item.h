@@ -20,34 +20,34 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
-		float Amplitude = 0.25f;
+	float Amplitude = 0.25f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
-		float TimeConstant = 5.f;
+	float TimeConstant = 5.f;
 
 	UFUNCTION(BlueprintPure)
-		float TransformedSin();
+	float TransformedSin();
 
 	UFUNCTION(BlueprintPure)
-		float TransformedCos();
+	float TransformedCos();
 
 	template<typename T>
-		T Avg(T First, T Second);
+	T Avg(T First, T Second);
 
 	UFUNCTION()
-		virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		float RunningTime;
+	float RunningTime;
 
 	UPROPERTY(VisibleAnywhere)
-		UStaticMeshComponent* ItemMesh;
-
-	UPROPERTY(VisibleAnywhere)
-		USphereComponent* Sphere;
+	USphereComponent* Sphere;
 };
 
 template<typename T>
