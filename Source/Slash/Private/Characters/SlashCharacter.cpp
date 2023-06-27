@@ -55,7 +55,7 @@ void ASlashCharacter::BeginPlay()
 
 void ASlashCharacter::Move(const FInputActionValue& Value)
 {
-	if (ActionState == EActionState::EAS_Attacking) return;
+	if (ActionState != EActionState::EAS_Unoccupied) return;
 
 	if (Controller) {
 		const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -93,12 +93,14 @@ void ASlashCharacter::Equip(const FInputActionValue& Value)
 	if (CanDisarm()) {
 		PlayEquipMontage(FName("Unequip"));
 		CharacterState = ECharacterState::ECS_Unequipped;
+		ActionState = EActionState::EAS_EquippingWeapon;
 		return;
 	}
 
 	if (CanArm()) {
 		PlayEquipMontage(FName("Equip"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		ActionState = EActionState::EAS_EquippingWeapon;
 		return;
 	}
 }
@@ -114,6 +116,25 @@ bool ASlashCharacter::CanArm()
 	return ActionState == EActionState::EAS_Unoccupied &&
 		CharacterState == ECharacterState::ECS_Unequipped &&
 		EquippedWeapon;
+}
+
+void ASlashCharacter::Disarm()
+{
+	if (EquippedWeapon) {
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+}
+
+void ASlashCharacter::Arm()
+{
+	if (EquippedWeapon) {
+		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+	}
+}
+
+void ASlashCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 void ASlashCharacter::PlayEquipMontage(FName SectionName)
@@ -135,7 +156,7 @@ void ASlashCharacter::PlayAttackMontage()
 
 		switch (Selection) {
 		case 0:
-			SectionName = FName("Attack1");
+			SectionName = FName("Attack2");
 			break;
 		case 1:
 			SectionName = FName("Attack2");
