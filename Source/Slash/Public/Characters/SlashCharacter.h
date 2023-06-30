@@ -26,8 +26,9 @@ public:
 	ASlashCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void Jump() override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 protected:
 	virtual void BeginPlay() override;
 
@@ -56,6 +57,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Equip(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
+	virtual void Jump() override;
 
 	/*
 		Play montage functions

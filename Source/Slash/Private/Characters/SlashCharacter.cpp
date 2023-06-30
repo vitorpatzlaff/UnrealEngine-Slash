@@ -1,16 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/SlashCharacter.h"
+#include "Animation/AnimMontage.h"
+#include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/BoxComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GroomComponent.h"
-#include "Animation/AnimMontage.h"
 
+#include "Characters/SlashCharacter.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 
@@ -156,7 +157,7 @@ void ASlashCharacter::PlayAttackMontage()
 
 		switch (Selection) {
 		case 0:
-			SectionName = FName("Attack2");
+			SectionName = FName("Attack1");
 			break;
 		case 1:
 			SectionName = FName("Attack2");
@@ -209,6 +210,13 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Jump);
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Equip);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASlashCharacter::Attack);
+	}
+}
+
+void ASlashCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
+		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
 	}
 }
 
