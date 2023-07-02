@@ -8,6 +8,8 @@
 
 #include "Enemy.generated.h"
 
+class UAnimMontage;
+class USoundBase;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter, public IHitInterface
@@ -22,8 +24,29 @@ public:
 
 	virtual void GetHit(const FVector& ImpactPoint) override;
 
+	void DirectionalHitReact(const FVector& ImpactPoint);
+
+private:
+
+	/*
+	Animation Montages
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem* HitParticles;
+
 protected:
 	virtual void BeginPlay() override;
+
+	/*
+		Play montage functions
+	*/
+	void PlayHitReactMontage(const FName& SectionName);
 
 public:
 
