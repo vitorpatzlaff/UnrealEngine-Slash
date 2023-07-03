@@ -79,13 +79,9 @@ DerivedDataCache
 Intermediate
 Saved
 Build
-Content
-**/BlackAlder
-**/Landscape
-**/MedievalDungeon
-**/Megascans
-**/StarterContent
-
+Content/*
+!Content/Blueprints
+Content/Blueprints/*/Animations/*
 
 .vscode
 .vs
