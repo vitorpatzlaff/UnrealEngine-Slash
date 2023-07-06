@@ -22,14 +22,14 @@ ABreakableActor::ABreakableActor()
 	Capsule->SetupAttachment(GetRootComponent());
 	Capsule->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
-
-	HasBeenHit = false;
 }
 
 void ABreakableActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// GeometryCollection->OnChaosBreakEvent.AddDynamic(this, &callback);
+	// TODO
 }
 
 void ABreakableActor::Tick(float DeltaTime)
@@ -40,28 +40,19 @@ void ABreakableActor::Tick(float DeltaTime)
 
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	FVector Location = GetActorLocation();
+	if (bBroken) return;
 
-	if (BreakSound) {
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			BreakSound,
-			Location
-		);
-	}
-	// can be in the blueprint
+	bBroken = true;
 
 	UWorld* World = GetWorld();
-
-	if (!HasBeenHit && World && TreasureClasses.Num() > 0) {
-		Location.Z += 75.f;
+	if (World && TreasureClasses.Num() > 0) {
+		FVector Location = GetActorLocation();
+		Location.Z += Z_Offset;
 
 		const int8 Selection = FMath::RandRange(0, TreasureClasses.Num() - 1);
 		World->SpawnActor<ATreasure>(TreasureClasses[Selection], Location, GetActorRotation());
 
-		HasBeenHit = true;
-
-		Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		//Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		//SetLifeSpan(3.f);
 		/* 
 			This two above things can be done on the OnChaosBreakEvent.

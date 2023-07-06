@@ -34,10 +34,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
 	TArray<TSubclassOf<class ATreasure>> TreasureClasses;
 
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* BreakSound;	
-
-	bool HasBeenHit;
-
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	int Z_Offset = 75;
+	
+	bool bBroken = false;
 };
   
