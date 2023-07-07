@@ -18,7 +18,10 @@ class SLASH_API AWeapon : public AItem
 	GENERATED_BODY()
 public:
 	AWeapon();
-	void Equip(USceneComponent* InParent, FName InSocketName);
+
+	// Equips the weapon to a Character
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
+
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
 	TArray<AActor*> IgnoreActors;
@@ -42,11 +45,14 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	UBoxComponent* WeaponBox;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceStart;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	float Damage = 20.f;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }

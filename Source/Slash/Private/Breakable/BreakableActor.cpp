@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Chaos/ChaosGameplayEventDispatcher.h"
 #include "Components/CapsuleComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -7,7 +8,6 @@
 #include "Breakable/BreakableActor.h"
 #include "Items/Treasure.h"
 
-// Sets default values
 ABreakableActor::ABreakableActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -28,8 +28,20 @@ void ABreakableActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// GeometryCollection->OnChaosBreakEvent.AddDynamic(this, &callback);
+	 GeometryCollection->OnChaosBreakEvent.AddDynamic(this, &ABreakableActor::OnChaosBreakEvent);
 	// TODO
+}
+
+void ABreakableActor::OnChaosBreakEvent(const FChaosBreakEvent& BreakEvent)
+{
+	if (bHasHitTriggered) {
+		SetLifeSpan(3.f);
+	}
+	else {
+		SetLifeSpan(10.f);
+		GetHit_Implementation(GetActorLocation());
+		// I am not using ImpactPoint directly, so it should not be a problem
+	}
 }
 
 void ABreakableActor::Tick(float DeltaTime)
@@ -44,6 +56,8 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 
 	bBroken = true;
 
+	Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
 	UWorld* World = GetWorld();
 	if (World && TreasureClasses.Num() > 0) {
 		FVector Location = GetActorLocation();
@@ -52,7 +66,6 @@ void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 		const int8 Selection = FMath::RandRange(0, TreasureClasses.Num() - 1);
 		World->SpawnActor<ATreasure>(TreasureClasses[Selection], Location, GetActorRotation());
 
-		//Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		//SetLifeSpan(3.f);
 		/* 
 			This two above things can be done on the OnChaosBreakEvent.

@@ -4,6 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "NiagaraComponent.h"
 
 #include "Interfaces/HitInterface.h"
 #include "Items/Weapons/Weapon.h"
@@ -30,8 +31,10 @@ void AWeapon::BeginPlay()
 	WeaponBox->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxOverlap);
 }
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
 	AttachMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
 	if (EquipSound) {
@@ -44,6 +47,10 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 
 	if (Sphere) {
 		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	if (EmbersEffect) {
+		EmbersEffect->Deactivate();
 	}
 }
 
@@ -101,5 +108,13 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		IgnoreActors.AddUnique(BoxHit.GetActor());
 
 		CreateFields(BoxHit.ImpactPoint);
+
+		UGameplayStatics::ApplyDamage(
+			BoxHit.GetActor(),
+			Damage,
+			GetInstigatorController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }

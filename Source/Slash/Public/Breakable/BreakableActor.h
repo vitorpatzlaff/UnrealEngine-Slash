@@ -30,6 +30,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UCapsuleComponent* Capsule;
 
+	UFUNCTION()
+	virtual void OnChaosBreakEvent(const FChaosBreakEvent& BreakEvent);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bHasHitTriggered = false;
+	// needs to be implemented on the blueprint
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
 	TArray<TSubclassOf<class ATreasure>> TreasureClasses;
