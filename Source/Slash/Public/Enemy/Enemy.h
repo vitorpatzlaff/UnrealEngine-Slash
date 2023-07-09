@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "Characters/CharacterTypes.h"
 #include "Interfaces/HitInterface.h"
 
 #include "Enemy.generated.h"
@@ -25,6 +27,19 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint);
 	void DirectionalHitReact(const FVector& ImpactPoint);
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+protected:
+	virtual void BeginPlay() override;
+
+	void Die();
+
+	/*
+		Play montage functions
+	*/
+	void PlayHitReactMontage(const FName& SectionName);
+
+	UPROPERTY(BlueprintReadOnly)
+	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -48,15 +63,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticles;
 
-protected:
-	virtual void BeginPlay() override;
+	UPROPERTY()
+	AActor* CombatTarget;
 
-	void Die();
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
 
-	/*
-		Play montage functions
-	*/
-	void PlayHitReactMontage(const FName& SectionName);
 public:
 
 };
