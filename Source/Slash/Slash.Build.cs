@@ -18,7 +18,8 @@ public class Slash : ModuleRules
 			"GeometryCollectionEngine",
 			"ChaosSolverEngine",
 			"UMG",
-		});
+            "AIModule",
+        });
 		// InputCore is not needed when using EnhancedInput
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
