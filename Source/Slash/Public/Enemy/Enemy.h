@@ -13,6 +13,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
+class UPawnSensingComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter, public IHitInterface
@@ -38,6 +39,9 @@ protected:
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
 
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
+
 	/*
 		Play montage functions
 	*/
@@ -47,14 +51,21 @@ protected:
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	/*
+		Components
+	*/
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;
 
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
+
 	/*
-	Animation Montages
+		Animation Montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;	
@@ -73,6 +84,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
+
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;
 
 	/*
 		Navigation
@@ -99,6 +113,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
 public:
 
 };

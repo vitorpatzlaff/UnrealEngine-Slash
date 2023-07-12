@@ -22,6 +22,12 @@ AWeapon::AWeapon()
 	BoxTraceStart->SetupAttachment(GetRootComponent());
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
+
+	/*
+		IMPROVEMENT: Pass blueprint fields functionality to here, but it may be not a good idea because its
+		components have a lot of properties that need test, so in the blueprint it is more practice to do it,
+		although it is a good valid excersise
+	*/
 }
 
 void AWeapon::BeginPlay()
