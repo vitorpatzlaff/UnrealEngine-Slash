@@ -19,6 +19,7 @@ public class Slash : ModuleRules
 			"ChaosSolverEngine",
 			"UMG",
             "AIModule",
+            "FieldSystemEngine",
         });
 		// InputCore is not needed when using EnhancedInput
 

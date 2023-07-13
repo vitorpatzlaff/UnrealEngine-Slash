@@ -2,6 +2,8 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "Field/FieldSystemComponent.h"
+#include "Field/FieldSystemObjects.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "NiagaraComponent.h"
@@ -23,10 +25,19 @@ AWeapon::AWeapon()
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Box Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
 
+	FieldSystem = CreateDefaultSubobject<UFieldSystemComponent>(TEXT("Field System"));
+	FieldSystem->SetupAttachment(GetRootComponent());
+	RadialFalloff = CreateDefaultSubobject<URadialFalloff>(TEXT("Radial Falloff"));
+	RadialVector = CreateDefaultSubobject<URadialVector>(TEXT("Radial Vector"));
+	FieldSystemMetaDataFilter = CreateDefaultSubobject<UFieldSystemMetaDataFilter>(TEXT("Field System Meta Data Filter"));
+	FieldSystemMetaDataFilter->ObjectType = EFieldObjectType::Field_Object_Destruction;
+
 	/*
 		IMPROVEMENT: Pass blueprint fields functionality to here, but it may be not a good idea because its
 		components have a lot of properties that need test, so in the blueprint it is more practice to do it,
 		although it is a good valid excersise
+
+		DONE: It was a good experience to do that, it helped me to use the C++ Unreal Engine Documentation,
 	*/
 }
 
@@ -123,4 +134,33 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 		CreateFields(BoxHit.ImpactPoint);
 	}
+}
+
+void AWeapon::CreateFields(const FVector& FieldLocation)
+{
+	RadialFalloff->SetRadialFalloff(
+		700000.f,
+		0.9f,
+		1.f,
+		0.f,
+		125.f,
+		FieldLocation,
+		EFieldFalloffType::Field_FallOff_None
+	);
+
+	RadialVector->SetRadialVector(100000.f, FieldLocation);
+
+	FieldSystem->ApplyPhysicsField(
+		true,
+		EFieldPhysicsType::Field_ExternalClusterStrain,
+		nullptr,
+		RadialFalloff
+	);
+
+	FieldSystem->ApplyPhysicsField(
+		true,
+		EFieldPhysicsType::Field_LinearForce,
+		FieldSystemMetaDataFilter,
+		RadialVector
+	);
 }

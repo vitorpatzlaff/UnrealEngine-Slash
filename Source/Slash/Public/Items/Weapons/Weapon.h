@@ -8,6 +8,10 @@
 
 class USoundBase;
 class UBoxComponent;
+class URadialFalloff;
+class UFieldSystemMetaDataFilter;
+class URadialVector;
+class UFieldSystemComponent;
 
 /**
  * 
@@ -35,7 +39,7 @@ protected:
 	UFUNCTION()
 	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	// UFUNCTION(BlueprintImplementableEvent) needed if the logic will be implemented on the blueprints
 	void CreateFields(const FVector& FieldLocation);
 
 private:
@@ -53,6 +57,18 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float Damage = 20.f;
+
+	UPROPERTY(VisibleAnywhere)
+	UFieldSystemComponent* FieldSystem;
+
+	UPROPERTY(VisibleAnywhere)
+	URadialFalloff* RadialFalloff;
+
+	UPROPERTY(VisibleAnywhere)
+	URadialVector* RadialVector;
+
+	UPROPERTY(VisibleAnywhere)
+	UFieldSystemMetaDataFilter* FieldSystemMetaDataFilter;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
