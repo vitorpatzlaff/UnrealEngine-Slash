@@ -81,7 +81,8 @@ Saved
 Build
 Content/*
 !Content/Blueprints
-Content/Blueprints/*/Animations/*
+Content/**/Animations/*
+!Content/**/Animations/AM*
 
 .vscode
 .vs
