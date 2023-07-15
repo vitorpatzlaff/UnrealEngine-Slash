@@ -11,6 +11,7 @@
 
 class UHealthBarComponent;
 class UPawnSensingComponent;
+class AWeapon;
 
 UCLASS()
 class SLASH_API AEnemy : public ABaseCharacter
@@ -27,6 +28,8 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint);
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	//~AEnemy(); instead of it, use:
+	virtual void Destroyed() override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -38,8 +41,8 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 
-	/*
-		Play montage functions
+	/**
+	* Play montage functions
 	*/
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
@@ -54,9 +57,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing;
 
-	/**
-	* Animation Montages
-	*/
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeapon> WeaponClass;
+
 	UPROPERTY()
 	AActor* CombatTarget;
 

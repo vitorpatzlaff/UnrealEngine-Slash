@@ -12,6 +12,7 @@
 #include "Enemy/Enemy.h"
 #include "HUD/HealthBarComponent.h"
 #include "Slash/DebugMacros.h"
+#include "Items/Weapons/Weapon.h"
 
 AEnemy::AEnemy()
 {
@@ -38,6 +39,13 @@ AEnemy::AEnemy()
 	PawnSensing->SetPeripheralVisionAngle(45.f);
 }
 
+void AEnemy::Destroyed()
+{
+	if (EquippedWeapon) {
+		EquippedWeapon->Destroy();
+	}
+}
+
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -51,6 +59,13 @@ void AEnemy::BeginPlay()
 
 	if (PawnSensing) {
 		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
+	}
+
+	UWorld* World = GetWorld();
+	if (World && WeaponClass) {
+		AWeapon* DefaultWeapon = World->SpawnActor<AWeapon>(WeaponClass);
+		DefaultWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+		EquippedWeapon = DefaultWeapon;
 	}
 }
 

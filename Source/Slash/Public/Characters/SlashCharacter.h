@@ -50,8 +50,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* AttackAction;
 
-	/*
-		Callback for input
+	/**
+	* Callback for input
 	*/
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -59,8 +59,8 @@ protected:
 	virtual void Attack() override;
 	virtual void Jump() override;
 
-	/*
-		Play montage functions
+	/**
+	* Play montage functions
 	*/
 	virtual void PlayAttackMontage() override;
 
@@ -101,8 +101,8 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
-	/*
-		Animation Montages
+	/**
+	* Animation Montages
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
