@@ -21,31 +21,44 @@ public:
 	ABaseCharacter();
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
-
-	virtual void GetHit_Implementation(const FVector& ImpactPoint);
-
 protected:
 	virtual void BeginPlay() override;
+
 	virtual void Attack();
 	virtual void Die();
-
-	virtual void PlayAttackMontage();
-	void PlayHitReactMontage(const FName& SectionName);
 	void DirectionalHitReact(const FVector& ImpactPoint);
+	virtual void HandleDamage(const float DamageAmount);
 	void PlayHitSound(const FVector& ImpactPoint);
 	void SpawnHitParticles(const FVector& ImpactPoint);
-	virtual void HandleDamage(const float DamageAmount);
-
+	void DisableCapsule();
 	virtual bool CanAttack();
 	bool IsAlive();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
 
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+
+	void PlayHitReactMontage(const FName& SectionName);
+	virtual int32 PlayAttackMontage();
+	virtual int32 PlayDeathMontage();
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon* EquippedWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UAttributeComponent* Attributes;
+
+private:
+	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);
+	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames);
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem* HitParticles;
 
 	/**
 	* Animation Montages
@@ -59,16 +72,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* DeathMontage;
 
-	/**
-	* Components
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UAttributeComponent* Attributes;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> AttackMontageSections;
 
-private:
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> DeathMontageSections;
 
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem* HitParticles;
 };

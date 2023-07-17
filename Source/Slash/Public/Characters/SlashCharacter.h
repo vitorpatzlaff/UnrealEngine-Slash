@@ -32,6 +32,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/** Callback for input */
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void Equip();
+	virtual void Attack() override;
+	virtual void Jump() override;
+
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputMappingContext* SlashContext;
 
@@ -50,26 +57,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* AttackAction;
 
-	/**
-	* Callback for input
-	*/
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void Equip();
-	virtual void Attack() override;
-	virtual void Jump() override;
-
-	/**
-	* Play montage functions
-	*/
-	virtual void PlayAttackMontage() override;
-
+	/** Combat */
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
-
-	void PlayEquipMontage(const FName& SectionName);
-	bool CanDisarm();	
+	bool CanDisarm();
 	bool CanArm();
+	void PlayEquipMontage(const FName& SectionName);
+
+	/** Variables for input */
 
 	UFUNCTION(BlueprintCallable)
 	void Disarm();
@@ -81,11 +76,7 @@ protected:
 	void FinishEquipping();
 
 private:
-	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
-
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied;
-
+	/** Character components*/
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
 
@@ -101,11 +92,15 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
-	/**
-	* Animation Montages
-	*/
+	/** Animation Montages */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
+
+	/** Character States */
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
