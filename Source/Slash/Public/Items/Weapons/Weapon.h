@@ -26,6 +26,12 @@ public:
 	// Equips the weapon to a Character
 	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
 
+	void DeactivateEmbers();
+
+	void DisableSphereCollision();
+
+	void PlayEquipSound();
+
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 
 	TArray<AActor*> IgnoreActors;
@@ -33,16 +39,25 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
-	
 	UFUNCTION()
 	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// UFUNCTION(BlueprintImplementableEvent) needed if the logic will be implemented on the blueprints
+	bool ActorIsSameType(AActor* OtherActor);
+
+	// UFUNCTION(BlueprintImplementableEvent) needed if the logic will be implemented on the blueprints and in the protected section
 	void CreateFields(const FVector& FieldLocation);
 
 private:
+	void BoxTrace(FHitResult& BoxHit);
+
+	void ExecuteGetHit(FHitResult& BoxHit);
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	FVector BoxTraceExtent = FVector(5.f);
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	bool bShowBoxDebug = false;
+
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	USoundBase* EquipSound;
 

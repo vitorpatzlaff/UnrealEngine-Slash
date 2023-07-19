@@ -67,13 +67,9 @@ void AEnemy::Destroyed()
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	ShowHealthBar();
-
-	if (IsAlive()) DirectionalHitReact(ImpactPoint);
-	else Die();
-
-	PlayHitSound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
+	Super::GetHit_Implementation(ImpactPoint);
+	if (!IsDead()) ShowHealthBar();
+	ClearPatrolTimer();
 }
 
 void AEnemy::BeginPlay()
@@ -83,6 +79,8 @@ void AEnemy::BeginPlay()
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
 
 	InitializeEnemy();
+
+	Tags.Add(FName("Enemy"));
 }
 
 void AEnemy::Die()
@@ -94,6 +92,7 @@ void AEnemy::Die()
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AEnemy::Attack()
@@ -109,6 +108,12 @@ bool AEnemy::CanAttack()
 		!IsDead() &&
 		!IsEngaged();
 		IsInsideAttackRadius();
+}
+
+void AEnemy::AttackEnd()
+{
+	EnemyState = EEnemyState::EES_NoState;
+	CheckCombatTarget();
 }
 
 void AEnemy::HandleDamage(const float DamageAmount)
@@ -130,12 +135,6 @@ int32 AEnemy::PlayDeathMontage()
 	}
 
 	return Selection;
-}
-
-void AEnemy::AttackEnd()
-{
-	EnemyState = EEnemyState::EES_NoState;
-	CheckCombatTarget();
 }
 
 void AEnemy::InitializeEnemy() {
@@ -310,7 +309,7 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 {
 	const bool bShouldChaseTarget =
 		EnemyState == EEnemyState::EES_Patrolling &&
-		SeenPawn->ActorHasTag(FName("SlashCharacter"));
+		SeenPawn->ActorHasTag(FName("EngageableTarget"));
 
 	if (bShouldChaseTarget) {
 		CombatTarget = SeenPawn;

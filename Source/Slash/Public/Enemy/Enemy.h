@@ -40,9 +40,9 @@ protected:
 	virtual void Die() override;
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
+	virtual void AttackEnd() override;
 	virtual void HandleDamage(const float DamageAmount) override;
 	virtual int32 PlayDeathMontage() override;
-	virtual void AttackEnd() override;
 	/** </ABaseCharacter> */
 
 	UPROPERTY(BlueprintReadOnly)
