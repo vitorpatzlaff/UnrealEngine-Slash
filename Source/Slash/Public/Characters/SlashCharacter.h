@@ -27,7 +27,7 @@ class SLASH_API ASlashCharacter : public ABaseCharacter
 public:
 	ASlashCharacter();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void GetHit_Implementation(const FVector& ImpactPoint);
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter);
 
 protected:
 	virtual void BeginPlay() override;

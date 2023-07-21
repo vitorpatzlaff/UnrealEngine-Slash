@@ -83,6 +83,7 @@ Content/*
 !Content/Blueprints
 Content/**/Animations/*
 !Content/**/Animations/AM*
+!Content/**/Animations/RM*
 
 .vscode
 .vs

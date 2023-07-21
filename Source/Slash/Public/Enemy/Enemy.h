@@ -28,7 +28,7 @@ public:
 	/** </AActor> */
 
 	/** <IHitInterface> */
-	virtual void GetHit_Implementation(const FVector& ImpactPoint);
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter);
 	/** </IHitInterface> */
 
 protected:
