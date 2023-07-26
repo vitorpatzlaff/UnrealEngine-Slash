@@ -100,6 +100,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 	if (BoxHit.GetActor()) {
 		if (ActorIsSameType(BoxHit.GetActor())) return;
+		//if (GetOwner() == BoxHit.GetActor()) return;
 
 		UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage, GetInstigatorController(), this, UDamageType::StaticClass());
 		ExecuteGetHit(BoxHit);

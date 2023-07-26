@@ -16,6 +16,7 @@ class UCameraComponent;
 class UGroomComponent;
 class AItem;
 class UAnimMontage;
+class USlashOverlay;
 
 struct FInputActionValue;
 
@@ -67,6 +68,7 @@ protected:
 	void Disarm();
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName);
+	virtual void Die() override;
 
 	/** Variables for input */
 
@@ -83,6 +85,12 @@ protected:
 	void HitReactEnd();
 
 private:
+	bool IsUnoccupied();
+	void AddMappingContext(APlayerController* PlayerController);
+	void InitializeSlashOverlay(APlayerController* PlayerController);
+
+	void SetHUDHealth();
+
 	/** Character components*/
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
@@ -108,7 +116,10 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	USlashOverlay* SlashOverlay;
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
+	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 };
