@@ -38,7 +38,7 @@ protected:
 	/** </AActor> */
 
 	/** <ABaseCharacter> */
-	virtual void Die() override;
+	virtual void Die_Implementation() override;
 	void SpawnSoul();
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
@@ -46,7 +46,7 @@ protected:
 	virtual void HandleDamage(const float DamageAmount) override;
 	/** </ABaseCharacter> */
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 
 private:
@@ -63,6 +63,7 @@ private:
 	bool IsOutsideCombatRadius();
 	bool IsOutsideAttackRadius();
 	bool IsInsideAttackRadius();
+	bool IsPatrolling();
 	bool IsChasing();
 	bool IsAttacking();
 	bool IsDead();

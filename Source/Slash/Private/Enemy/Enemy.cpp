@@ -76,12 +76,17 @@ void AEnemy::Destroyed()
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
+
 	if (!IsDead()) ShowHealthBar();
 	ClearPatrolTimer();
 	ClearAttackTimer();
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	StopAttackMontage();
+
+	if (IsInsideAttackRadius() && !IsDead()) {
+		StartAttackTimer();
+	}
 }
 
 void AEnemy::BeginPlay()
@@ -95,9 +100,9 @@ void AEnemy::BeginPlay()
 	Tags.Add(FName("Enemy"));
 }
 
-void AEnemy::Die()
+void AEnemy::Die_Implementation()
 {
-	Super::Die();
+	Super::Die_Implementation();
 
 	EnemyState = EEnemyState::EES_Dead;
 	ClearAttackTimer();
@@ -114,8 +119,10 @@ void AEnemy::SpawnSoul()
 	UWorld* World = GetWorld();
 
 	if (World && SoulClass && Attributes) {
-		if (ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, GetActorLocation(), GetActorRotation())) {
+		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, 125.f);
+		if (ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, SpawnLocation, GetActorRotation())) {
 			SpawnedSoul->SetSouls(Attributes->GetSouls());
+			SpawnedSoul->SetOwner(this);
 		}
 	}
 }
@@ -132,10 +139,10 @@ void AEnemy::Attack()
 
 bool AEnemy::CanAttack()
 {
-	return !IsAttacking() &&
-		!IsDead() &&
-		!IsEngaged();
-		IsInsideAttackRadius();
+	return IsInsideAttackRadius() &&
+		!IsAttacking() &&
+		!IsEngaged() &&
+		!IsDead();
 }
 
 void AEnemy::AttackEnd()
@@ -238,6 +245,11 @@ bool AEnemy::IsInsideAttackRadius()
 	return InTargetRange(CombatTarget, AttackRadius);
 }
 
+bool AEnemy::IsPatrolling()
+{
+	return EnemyState == EEnemyState::EES_Patrolling;
+}
+
 bool AEnemy::IsChasing()
 {
 	return EnemyState == EEnemyState::EES_Chasing;
@@ -324,7 +336,7 @@ void AEnemy::SpawnDefaultWeapon()
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
 	const bool bShouldChaseTarget =
-		EnemyState == EEnemyState::EES_Patrolling &&
+		IsPatrolling() &&
 		SeenPawn->ActorHasTag(FName("EngageableTarget")) &&
 		!SeenPawn->ActorHasTag(FName("Dead"));
 
